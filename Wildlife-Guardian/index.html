@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildlife Guardian</title>
+    <!-- Modern, clean font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Preload videos for smooth transitions -->
+    <link rel="preload" href="normal-state-hamster.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="finish-task-hamster.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="sad-state-hamster.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="drinking-hamster.mp4" as="video" type="video/mp4">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Wildlife Guardian</h1>
+            <div class="streak">🔥 Streak: <span id="streak-count">0</span></div>
+            <div class="info-btn" onclick="openInfoModal()" title="About this project">?</div>
+            <button onclick="resetTestingValues()"
+                style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.25); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 5px 10px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: background 0.2s;"
+                onmouseover="this.style.background='rgba(255,255,255,0.4)'"
+                onmouseout="this.style.background='rgba(255,255,255,0.25)'">🔄 Reset</button>
+        </header>
+
+        <main>
+            <!-- Pet Character Area -->
+            <section class="pet-display" id="pet-container">
+                <div class="pet-name-wrap" onclick="changePetName()">
+                    <span id="pet-name-display">Hammy</span>
+                    <span class="magnify">🔍</span>
+                </div>
+                <div class="pet-sprite" id="pet-sprite">
+                    <!-- Dynamic Video Element: Changes src based on state or animation -->
+                    <video id="hamster-video" src="normal-state-hamster.mp4" autoplay loop muted playsinline
+                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></video>
+
+                    <!-- Fallback / Legacy emoji div (hidden) -->
+                    <div class="hamster hidden" id="hamster" style="display: none;">🐹</div>
+                </div>
+                <div class="pet-status-text" id="pet-status-text">Happy</div>
+                <!-- Audio/Sound for special tasks -->
+                <audio id="audio-drinking" src="drinking-hamster.mp4"></audio>
+            </section>
+
+            <!-- Health Bars -->
+            <section class="stats-panel">
+                <div class="stat-row">
+                    <label>💧 Hydration</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill water" id="bar-hydration" style="width: 50%"></div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <label>🍎 Nutrition</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill food" id="bar-nutrition" style="width: 50%"></div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <label>⚡ Energy</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill energy" id="bar-energy" style="width: 50%"></div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <label>💖 Happiness</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill happy" id="bar-happiness" style="width: 50%"></div>
+                    </div>
+                </div>
+            </section>
+            <section class="walk-progress-panel"
+                style="margin: 0 1.5rem 1.5rem 1.5rem; background: #f8f9fa; padding: 1.5rem; border-radius: 20px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);">
+                <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #495057;">🚶 Daily Walk
+                    Progress</label>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="bar-walk"
+                        style="width: 0%; background-color: #20c997; transition: width 0.5s ease-out, background-color 0.5s ease;">
+                    </div>
+                </div>
+                <small style="color: #adb5bd; margin-top: 0.5rem; display: block;">Fills up automatically as you
+                    complete other habits!</small>
+            </section>
+            <!-- User Real-life Actions -->
+            <section class="actions-panel" id="actions-panel">
+                <div style="text-align: center; color: #868e96; grid-column: span 2; padding: 1rem;">
+                    Waiting for a task to appear... ⏳
+                </div>
+            </section>
+
+            <!-- Rewards Section (Hidden when not super healthy) -->
+            <section class="rewards-panel hidden" id="rewards-panel">
+                <h2>🎁 Super Healthy Rewards!</h2>
+                <div class="unlock-card fact">
+                    <h3>Did you know?</h3>
+                    <p id="fact-text"></p>
+                </div>
+                <div class="unlock-card tip">
+                    <h3>How you can help:</h3>
+                    <p id="tip-text"></p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="quiz-footer">
+                <button class="quiz-trigger-btn" onclick="openQuizModal()">📝 Take the Wildlife Quiz!</button>
+            </section>
+        </main>
+
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-btn" onclick="closeQuizModal()">&times;</span>
+            <div id="quiz-start-view">
+                <h2>🌿 Wildlife Guardian Quiz</h2>
+                <p>Test your knowledge about the European Hamster! Answer 5 random questions to earn a boost.</p>
+                <button class="action-btn" style="margin-top: 1rem; width: 100%;" onclick="startQuiz()">Start
+                    Quiz</button>
+            </div>
+            <div id="quiz-question-view" class="hidden">
+                <div class="quiz-question" id="quiz-question-text">Question goes here?</div>
+                <div class="quiz-options" id="quiz-options-container">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+            <div id="quiz-results-view" class="hidden">
+                <h2 id="quiz-score-text">You got 4/5!</h2>
+                <p id="quiz-reward-text">Your hamster feels smarter and happier!</p>
+                <button class="action-btn" style="margin-top: 1rem; width: 100%;"
+                    onclick="closeQuizModal()">Awesome!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info/Awareness Modal -->
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px; text-align: left;">
+            <span class="close-btn" onclick="closeInfoModal()">&times;</span>
+            <h2 style="text-align: center; color: var(--primary-dark); margin-bottom: 1rem;">🐹 Why Wildlife Guardian?
+            </h2>
+            <div
+                style="background: #f1f3f5; border-radius: 15px; height: 400px; margin-bottom: 1.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px dashed #dee2e6;">
+                <img src="european-hamster.jpg" alt="European Hamster"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <p style="margin-bottom: 1rem; line-height: 1.5;">The <strong>European Hamster</strong> is a beautiful wild
+                species, but it is now <strong>Critically Endangered</strong>. Modern farming and growing cities have
+                broken up its habitat, leaving it with nowhere to live safely.</p>
+            <p style="margin-bottom: 1.5rem; line-height: 1.5;">This app was created to <strong>raise
+                    awareness</strong>. By taking care of your virtual hamster and completing healthy habits, you learn
+                how specialized and vulnerable these creatures are in the wild.</p>
+            <button class="action-btn" style="width: 100%;" onclick="closeInfoModal()">I want to help!</button>
+        </div>
+    </div>
+
+    <!-- Streamlit Modal/Overlay -->
+    <div id="camera-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px; width: 90%; height: 80vh; padding: 1.5rem;">
+            <span class="close-btn" onclick="closeCameraModal()">&times;</span>
+            <h2 style="margin-bottom: 1rem;">🔍 Task Verification</h2>
+            <div id="camera-iframe-container" style="width: 100%; height: calc(100% - 100px); background: #eee; border-radius: 12px; overflow: auto; position: relative;">
+                <!-- Iframe injected here via JS -->
+                <p style="padding: 2rem; text-align: center; color: #868e96;">Loading AI Camera...</p>
+            </div>
+            <div id="verification-status" class="status-banner hidden"></div>
+            <div id="fallback-verify" style="margin-top: 1rem; text-align: center;">
+                <button class="action-btn" style="width: 100%; background: #adb5bd; box-shadow: 0 6px 0 #868e96;" onclick="closeCameraModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
