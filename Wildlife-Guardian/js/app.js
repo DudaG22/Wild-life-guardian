@@ -397,7 +397,7 @@ function openCameraTask(taskId, taskLabel) {
     // Inject the Streamlit Iframe
     const container = document.getElementById('camera-iframe-container');
     // Note: This assumes you run: py -3.11 -m streamlit run machine.py
-    const streamlitUrl = `http://localhost:8501/?task=${taskId}&label=${encodeURIComponent(taskLabel)}`;
+    const streamlitUrl = `https://wild-life-guardian.streamlit.app/?task=${taskId}&label=${encodeURIComponent(taskLabel)}`;
     
     container.innerHTML = `<iframe src="${streamlitUrl}" style="width:100%; height:100%; border:none;" allow="camera; microphone"></iframe>`;
 
